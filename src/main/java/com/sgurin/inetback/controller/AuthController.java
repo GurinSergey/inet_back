@@ -2,10 +2,10 @@ package com.sgurin.inetback.controller;
 
 import com.sgurin.inetback.config.security.jwt.JwtTokenUtil;
 import com.sgurin.inetback.domain.User;
-import com.sgurin.inetback.model.AuthRequest;
-import com.sgurin.inetback.model.AuthResponse;
+import com.sgurin.inetback.exeption.UnauthorizedException;
+import com.sgurin.inetback.response.GenericResponse;
+import com.sgurin.inetback.service.LocaleMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -19,27 +19,31 @@ import javax.validation.Valid;
 
 @RestController
 public class AuthController {
+    private final AuthenticationManager authManager;
+    private final JwtTokenUtil jwtTokenUtil;
+
     @Autowired
-    private AuthenticationManager authManager;
-    @Autowired
-    JwtTokenUtil jwtTokenUtil;
+    public AuthController(AuthenticationManager authManager,
+                          JwtTokenUtil jwtTokenUtil) {
+        this.authManager = authManager;
+        this.jwtTokenUtil = jwtTokenUtil;
+    }
 
     @PostMapping("/auth/login")
-    public ResponseEntity<?> login(@RequestBody @Valid AuthRequest request) {
+    public ResponseEntity<GenericResponse<User>> login(@RequestBody @Valid User user) throws UnauthorizedException {
         try {
             Authentication authentication = authManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            request.getEmail(), request.getPassword())
+                            user.getEmail(), user.getPassword())
             );
 
-            User user = (User) authentication.getPrincipal();
-            String accessToken = jwtTokenUtil.generateAccessToken(user);
-            AuthResponse response = new AuthResponse(user.getEmail(), accessToken);
+            User currentUser = (User) authentication.getPrincipal();
+            String accessToken = jwtTokenUtil.generateAccessToken(currentUser);
 
-            return ResponseEntity.ok().body(response);
+            return GenericResponse.successWithToken(currentUser, accessToken);
 
         } catch (BadCredentialsException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new UnauthorizedException(ex.getMessage());
         }
     }
 }

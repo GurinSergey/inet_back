@@ -2,8 +2,11 @@ package com.sgurin.inetback.config.security.jwt;
 
 import com.sgurin.inetback.domain.Role;
 import com.sgurin.inetback.domain.User;
+import com.sgurin.inetback.enums.Language;
+import com.sgurin.inetback.utils.Utils;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,6 +35,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
+
+        Language language = Utils.getLanguage(request);
+
+        LocaleContextHolder.setLocale(language.getLocale());
 
         if (!hasAuthorizationBearer(request)) {
             filterChain.doFilter(request, response);

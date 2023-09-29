@@ -13,6 +13,8 @@ spring:
       format_sql: true
       dialect: org.hibernate.dialect.PostgreSQLDialect
       jdbc.lob.non_contextual_creation: true
+  messages:
+    encoding: UTF-8
 management:
   endpoints:
     web:
