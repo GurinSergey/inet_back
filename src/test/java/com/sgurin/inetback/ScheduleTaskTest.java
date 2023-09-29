@@ -1,7 +1,6 @@
 package com.sgurin.inetback;
 
-import com.sgurin.inetback.domain.Role;
-import com.sgurin.inetback.repository.RoleRepository;
+import com.sgurin.inetback.schedule.tasks.GarbageCollectorTask;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,27 +9,21 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @SpringBootTest(classes = {
         InetBackApplication.class})
 @RunWith(SpringRunner.class)
 @Transactional
-public class RoleRepositoryTests {
+public class ScheduleTaskTest {
     @Autowired
-    private RoleRepository roleRepository;
+    private GarbageCollectorTask garbageCollectorTask;
 
     @Test
     @Rollback(value = false)
-    public void testCreateRoles() {
-        Role admin = new Role("ROLE_ADMIN");
-        Role user = new Role("ROLE_USER");
+    public void name() {
+        boolean run = garbageCollectorTask.run("14");
 
-        roleRepository.saveAll(Arrays.asList(admin, user));
-
-        long count = roleRepository.count();
-        assertEquals(2, count);
+        assertTrue(run);
     }
 }
