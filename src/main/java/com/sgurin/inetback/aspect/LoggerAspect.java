@@ -56,14 +56,13 @@ public class LoggerAspect {
             log.info("Finish execution of [{}]", methodName);
             protocol.addLineProtocol(String.format("Finish execution of [%s]", methodName));
 
-
             if (logMethod.needSuccessLog()) {
                 protocolService.save(protocol);
             }
 
             return result;
         } catch (Exception ex) {
-            log.info("Fail execution of [{}]", methodName, ex);
+            log.error("Fail execution of [{} {}]", className, methodName, ex);
             String stackTrace = Throwables.getStackTraceAsString(ex);
             protocol.addErrCount();
             protocol.addLineProtocol(ex.getLocalizedMessage()).addLineProtocol(stackTrace);
