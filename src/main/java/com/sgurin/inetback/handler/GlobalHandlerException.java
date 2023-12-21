@@ -1,5 +1,6 @@
 package com.sgurin.inetback.handler;
 
+import com.google.common.base.Throwables;
 import com.sgurin.inetback.exeption.*;
 import com.sgurin.inetback.response.GenericResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
@@ -88,6 +90,11 @@ public class GlobalHandlerException {
     public ResponseEntity customHandlePermission(Exception ex, WebRequest request) {
 
         return GenericResponse.warning(ex.getLocalizedMessage());
+    }
 
+    @ExceptionHandler({NullPointerException.class})
+    public ResponseEntity handlerNullPointerException(NullPointerException ex) {
+        String error = Objects.isNull(ex.getLocalizedMessage()) ? "Please try later!" : ex.getLocalizedMessage();
+        return GenericResponse.errorHttp(error, HttpStatus.I_AM_A_TEAPOT);
     }
 }

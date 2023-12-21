@@ -1,0 +1,70 @@
+--images
+docker images
+
+--build images
+docker build -t inet-back .
+
+--delete image
+docker image rm inet-back
+docker image rm 40cd90d0af01
+
+--containers
+docker ps -a
+
+--run image in container
+docker run -e DB_ALIAS=192.168.0.155:5432 -p 3001:80 --name inet-back -d inet-back
+
+--copy data from container
+docker cp [container-id]:/etc/nginx/nginx.conf /host/path/nginx.conf
+
+--delete container
+docker rm inet-back
+docker rm 6520bc4cbad8
+docker rm -f 6520bc4cbad8
+
+--delete all
+docker system prune -a --volumes
+
+--info
+docker info
+
+--inspect container
+docker inspect 6520bc4cbad8
+
+--stats container
+docker stats 6520bc4cbad8
+
+--logs
+docker logs -f inet-back
+
+--exec
+docker exec -it [container-id] bash
+
+--volume
+docker volume ls
+
+--host volumes
+docker run -v /opt/mysql_data:/var/lib/mysql mysql
+
+--anonymous volumes (../docker/volumes/HASH/_data)
+docker run -v /var/lib/mysql mysql
+
+--named volumes (../docker/volumes/mysql_data/_data)
+docker run -v mysql_data/var/lib/mysql mysql
+
+--create volume
+docker volume create infos
+
+--delete container
+docker volume rm infos
+
+--dockerfile build
+docker build -t [image-name:tag] .
+
+--docker-compose build and up
+docker-compose up -d --build
+
+
+
+--my-nginx example
+docker run -d --restart always --name my-nginx -p 88:80 -v D:\Practice\Docker\volume\var\www\html:/usr/share/nginx/html -v D:\Practice\Docker\volume\home\db\nginx:/etc/nginx -v D:\Practice\Docker\volume\home\db\log:/log my-nginx
