@@ -2,6 +2,7 @@ package com.sgurin.inetback.component.rabbit;
 
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
@@ -9,6 +10,7 @@ import java.util.Date;
 
 @Component
 @EnableRabbit
+@ConditionalOnProperty(name = "spring.rabbitmq.enabled", havingValue = "true")
 public class RabbitMQConsumer {
 
     @RabbitListener(queues = "queue1")
