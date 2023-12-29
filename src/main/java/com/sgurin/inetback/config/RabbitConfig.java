@@ -1,6 +1,5 @@
 package com.sgurin.inetback.config;
 
-import org.postgresql.core.ConnectionFactory;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;

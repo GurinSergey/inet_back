@@ -8,15 +8,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Objects;
 
 @Service
 public class TokenAuthService {
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Autowired
-    public TokenAuthService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public TokenAuthService(UserService userService) {
+        this.userService = userService;
     }
 
     public UserDetails getPrincipal() {
@@ -26,7 +26,11 @@ public class TokenAuthService {
     public User getCurrentUser() {
         User user = null;
         try {
-            user =  userRepository.findByEmail(getPrincipal().getUsername()).orElseThrow(() -> new BadCredentialsException("user.credentials.wrong"));
+            user = userService.findByEmail(getPrincipal().getUsername());
+
+            if (Objects.isNull(user)){
+                throw new BadCredentialsException("user.credentials.wrong");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             throw new BadCredentialsException("user.credentials.wrong");

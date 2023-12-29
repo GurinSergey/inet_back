@@ -1,7 +1,9 @@
 package com.sgurin.inetback.config.security.config;
 
 import com.sgurin.inetback.config.security.jwt.JwtTokenFilter;
+import com.sgurin.inetback.domain.User;
 import com.sgurin.inetback.repository.UserRepository;
+import com.sgurin.inetback.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,18 +19,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Objects;
 
 @EnableWebSecurity
 //@EnableWebSecurity(debug = true)
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
-public class SpringSecurityConfig  extends WebSecurityConfigurerAdapter {
-    private final UserRepository userRepository;
+public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
+    private final UserService userService;
     private final JwtTokenFilter jwtTokenFilter;
 
     @Autowired
-    public SpringSecurityConfig(UserRepository userRepository,
+    public SpringSecurityConfig(UserService userService,
                                 JwtTokenFilter jwtTokenFilter) {
-        this.userRepository = userRepository;
+        this.userService = userService;
         this.jwtTokenFilter = jwtTokenFilter;
     }
 
@@ -57,10 +60,15 @@ public class SpringSecurityConfig  extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(
-                username -> userRepository.findByEmail(username)
-                        .orElseThrow(
-                                () -> new UsernameNotFoundException("User " + username + " not found.")));
+        auth.userDetailsService(username -> {
+            User user = userService.findByEmail(username);
+
+            if (Objects.isNull(user)) {
+                throw new UsernameNotFoundException("User " + username + " not found.");
+            }
+
+            return user;
+        });
     }
 
     @Bean
