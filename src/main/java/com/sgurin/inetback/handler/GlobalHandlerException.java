@@ -37,13 +37,13 @@ public class GlobalHandlerException {
         return GenericResponse.errorHttp(ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler(AuthenticationException.class)
-    @ResponseStatus(value = HttpStatus.FORBIDDEN)
-    @ResponseBody
-    public ResponseEntity handlerAuthenticationException(final AuthenticationException ex) {
-        log.error(ex.getLocalizedMessage());
-        return GenericResponse.errorHttp(ex.getMessage(), HttpStatus.FORBIDDEN);
-    }
+//    @ExceptionHandler(AuthenticationException.class)
+//    @ResponseStatus(value = HttpStatus.FORBIDDEN)
+//    @ResponseBody
+//    public ResponseEntity handlerAuthenticationException(final AuthenticationException ex) {
+//        log.error(ex.getLocalizedMessage());
+//        return GenericResponse.errorHttp(ex.getMessage(), HttpStatus.FORBIDDEN);
+//    }
 
     @ExceptionHandler({Exception.class, RuntimeException.class})
     @ResponseStatus(value = HttpStatus.I_AM_A_TEAPOT)

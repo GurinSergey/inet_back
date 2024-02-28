@@ -107,4 +107,12 @@ public class Protocol {
     public void confirm() {
         this.logMessage = this.tempMessage.toString().getBytes(StandardCharsets.UTF_8);
     }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
 }

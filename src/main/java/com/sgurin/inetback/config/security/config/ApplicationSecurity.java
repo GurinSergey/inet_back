@@ -1,6 +1,5 @@
 package com.sgurin.inetback.config.security.config;
 
-import com.sgurin.inetback.config.security.jwt.JwtTokenFilter;
 import com.sgurin.inetback.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

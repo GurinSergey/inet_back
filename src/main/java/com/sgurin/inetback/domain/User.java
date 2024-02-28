@@ -1,28 +1,35 @@
 package com.sgurin.inetback.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.sgurin.inetback.enums.AuthProvider;
 import lombok.ToString;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(schema = "inet_back", name = "users")
 @ToString
-public class User implements UserDetails {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @Column(name = "id", columnDefinition = "BIGINT")
+    private Long id;
 
-    @Column(nullable = false, length = 50, unique = true)
+    @Column(name = "email", nullable = false, length = 50, unique = true)
     private String email;
 
-    @Column(nullable = false, length = 64)
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    @Column(name = "password")
     private String password;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             schema = "inet_back",
             name = "users_roles",
@@ -31,6 +38,13 @@ public class User implements UserDetails {
     )
     private Set<Role> roles = new HashSet<>();
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "provider")
+    private AuthProvider provider;
+
+    @Column(name = "provider_id")
+    private String providerId;
+
     public User() { }
 
     public User(String email, String password) {
@@ -38,12 +52,28 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getEmail() {
@@ -74,37 +104,19 @@ public class User implements UserDetails {
         this.roles.add(role);
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        for (Role role : roles) {
-            authorities.add(new SimpleGrantedAuthority(role.getName()));
-        }
-        return authorities;
+    public AuthProvider getProvider() {
+        return provider;
     }
 
-    @Override
-    public String getUsername() {
-        return getEmail();
+    public void setProvider(AuthProvider provider) {
+        this.provider = provider;
     }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
+    public String getProviderId() {
+        return providerId;
     }
 
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
+    public void setProviderId(String providerId) {
+        this.providerId = providerId;
     }
 }

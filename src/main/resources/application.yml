@@ -18,6 +18,58 @@ spring:
   jackson:
     serialization:
       INDENT_OUTPUT: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: 994611053674-7v8kg4oisiunl0fc79oe5gk82hq10v5h.apps.googleusercontent.com
+            clientSecret: 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
+            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+            scope:
+              - email
+              - profile
+          facebook:
+            clientId: 1067809224523954
+            clientSecret: 1130e4d140e425ff4ca1161eb40b4c0c
+            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+            scope:
+              - email
+              - public_profile
+          instagram:
+            clientId: 912420647046382
+            clientSecret: bd39ac04b7096d8656aa64727257625a
+            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+            authorizationGrantType: authorization_code
+            scope:
+              - user_profile
+              - user_media
+        provider:
+          google:
+            authorizationUri: https://accounts.google.com/o/oauth2/auth
+            tokenUri: https://oauth2.googleapis.com/token
+            userInfoUri: https://www.googleapis.com/oauth2/v3/userinfo
+            userNameAttribute: name
+          facebook:
+            authorizationUri: https://www.facebook.com/v3.0/dialog/oauth
+            tokenUri: https://graph.facebook.com/v3.0/oauth/access_token
+            userInfoUri: https://graph.facebook.com/v3.0/me?fields=id,first_name,middle_name,last_name,name,email,verified,picture.width(250).height(250)
+          instagram:
+            authorizationUri: https://api.instagram.com/oauth/authorize
+            tokenUri: https://api.instagram.com/oauth/access_token
+            userInfoUri: https://graph.instagram.com/me?fields=id,username
+app:
+  auth:
+    tokenSecret: 04ca023b39512e46d0c2cf4b48d5aac61d34302994c87ed4eff225dcf3b0a218739f3897051a057f9b846a69ea2927a587044164b7bae5e1306219d50b588cb1
+    tokenExpirationMsec: 43200
+  oauth2:
+    # After successfully authenticating with the OAuth2 Provider,
+    # we'll be generating an auth token for the user and sending the token to the
+    # redirectUri mentioned by the client in the /oauth2/authorize request.
+    # We're not using cookies because they won't work well in mobile clients.
+    authorizedRedirectUris:
+#      - http://localhost:8002/oauth2/redirect
+      - http3://localhost:8443/oauth2/redirect
 management:
   endpoints:
     web:
